@@ -1,0 +1,81 @@
+# Layered on top of ClickStack/docker-compose.yml (unmodified, git submodule) via:
+#   docker compose -f ClickStack/docker-compose.yml -f docker-compose.yml up -d
+#
+# Adds:
+#   - ch-ddl-init: applies clickhouse/ddl/*.sql to ClickStack's ch-server (medlog schema)
+#   - otel-collector: disabled via profile (its build lacks the `webhook_event` receiver
+#     MedLog needs - see medlog-otelcol below)
+#   - medlog-otelcol: a full otelcol-contrib collector that receives MedLog events as OTLP logs
+#     (from event-receiver/app.py) and writes them directly into ch-server's medlog schema
+  #   - event-receiver: FastAPI app validating MedLog events and forwarding them to medlog-otelcol
+name: clickstack
+
+services:
+  ch-ddl-init:
+    image: clickhouse/clickhouse-server:26.1-alpine
+    depends_on:
+      - ch-server
+    networks:
+      - internal
+    volumes:
+      # Path is relative to ClickStack/ (the first -f file's directory, which Compose
+      # uses to resolve all relative paths), not to this file's directory.
+      - ../clickhouse/ddl:/ddl:ro
+    restart: "no"
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        set -euo pipefail
+        for i in $$(seq 1 60); do
+          if clickhouse-client --host ch-server --query "SELECT 1" >/dev/null 2>&1; then
+            break
+          fi
+          echo "waiting for ch-server... ($$i/60)"
+          sleep 2
+        done
+        for f in /ddl/*.sql; do
+          echo "applying $$f"
+          clickhouse-client --host ch-server --multiquery < "$$f"
+        done
+        echo "medlog DDLs applied"
+
+  otel-collector:
+    # Never-activated profile: disables this service without editing ClickStack's
+    # own compose file. MedLog uses its own medlog-otelcol config/pipeline below instead.
+    profiles:
+      - disabled
+
+  medlog-otelcol:
+    image: otel/opentelemetry-collector-contrib:0.158.0
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    depends_on:
+      - ch-server
+    networks:
+      - internal
+    restart: on-failure
+    volumes:
+      # Paths are relative to ClickStack/ (see ch-ddl-init comment above).
+      - ../collector/otelcol-config.yaml:/etc/otelcol-contrib/config.yaml:ro
+      - ../.volumes/medlog-otelcol-queue:/var/lib/otelcol/file_storage
+    # No ports published: only event-receiver (same `internal` network) talks to this collector.
+
+  event-receiver:
+    build:
+      # Context/dockerfile paths are relative to ClickStack/ (see ch-ddl-init comment above).
+      context: ..
+      dockerfile: event-receiver/Dockerfile
+    depends_on:
+      - medlog-otelcol
+    networks:
+      - internal
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://medlog-otelcol:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      MEDLOG_API_KEY: ${MEDLOG_API_KEY:?Set MEDLOG_API_KEY before starting the stack}
+      EVENT_ID_DB_PATH: /app/event-receiver/data/event_ids.db
+      PORT: "5000"
+    volumes:
+      - ../.volumes/event-receiver-db:/app/event-receiver/data
+    restart: on-failure
+    ports:
+      - "5000:5000"

@@ -1,0 +1,27 @@
+[project]
+name = "medlog-event-receiver"
+version = "0.1.0"
+description = "FastAPI event receiver implementing the MedLog OpenAPI spec, forwarding validated events as OTLP logs"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "httpx2>=0.1",
+    "openapi-core[fastapi]>=0.19",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "jsonschema>=4.18",
+    "opentelemetry-sdk>=1.44",
+    "opentelemetry-exporter-otlp-proto-http>=1.44",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["app", "event_store", "semantics"]
+packages = ["semantic_schemas"]
+
+[tool.setuptools.package-data]
+semantic_schemas = ["*.json", "LICENSE"]

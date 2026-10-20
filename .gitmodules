@@ -1,0 +1,3 @@
+[submodule "ClickStack"]
+	path = ClickStack
+	url = git@github.com:ClickHouse/ClickStack.git

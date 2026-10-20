@@ -1,0 +1,628 @@
+openapi: 3.0.4
+info:
+  title: MedLog API Specification
+  description: |-
+    MedLog is a protocol for event-level logging of clinical AI. Any time an AI model is invoked to interact with a human, interface with another algorithm, or act independently, a MedLog record is created. This record consists of nine core fields: model, user, target, inputs, artifacts, outputs, outcomes, metadata, and feedback, providing a structured and consistent record of model activity. The MedLog protocol can catalyze the development of new databases and software to store and analyze MedLog records. Realizing this vision would enable continuous surveillance, auditing, and iterative improvement of medical AI – including, when needed, detailed traces for complex, agentic, or multi-stage workflows – laying the foundation for a new form of AI-centric digital epidemiology.
+
+    Some useful links:
+    - [MedLog repository](https://github.com/mims-harvard/medlog)
+  # termsOfService: https://swagger.io/terms/
+  contact:
+    email: anoori@college.harvard.edu
+  license:
+    name: MIT
+    url: https://mit-license.org/
+  version: "0.1"
+# externalDocs:
+#   description: Find out more about Swagger
+#   url: https://swagger.io
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/harvard-647/MedLog/0.0.1
+  - url: https://medlog.swagger.io/api/v3
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Events
+    description: Write-once event logging endpoints
+
+paths:
+  /event/inference-start:
+    post:
+      summary: Record the beginning of an inference run
+      operationId: postInferenceStart
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InferenceStartEvent'
+      responses:
+        '201':
+          description: Event accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /event/internal-artifact:
+    post:
+      summary: Record a new internal model artifact
+      operationId: postInternalArtifact
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InternalArtifactEvent'
+      responses:
+        '201':
+          description: Event accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /event/human-output:
+    post:
+      summary: Record content shown to a human user
+      operationId: postHumanOutput
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HumanOutputEvent'
+      responses:
+        '201':
+          description: Event accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /event/outcome:
+    post:
+      summary: Attribute a downstream patient or system outcome to a prior inference
+      operationId: postOutcome
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OutcomeEvent'
+      responses:
+        '201':
+          description: Event accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /event/user-feedback:
+    post:
+      summary: Record explicit user feedback
+      operationId: postUserFeedback
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserFeedbackEvent'
+      responses:
+        '201':
+          description: Event accepted
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  responses:
+    BadRequest:
+      description: The request body is malformed or fails schema validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: The X-API-Key header is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: The request is authenticated but not authorized.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Stable machine-readable error code.
+        message:
+          type: string
+          description: Human-readable explanation of the error.
+        details:
+          type: object
+          additionalProperties: true
+          description: Optional structured error details.
+
+    # ---------- reusable building blocks ----------
+    BaseEvent:
+      type: object
+      required: [event_id, timestamp, medlog_version, system_metadata]
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          description: Unique ID for this event
+        run_id:
+          type: string
+          format: uuid
+          description: Constant across all events in the same inference run
+        parent_event_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: ID of the event this one expands on (if any)
+        timestamp:
+          type: string
+          format: date-time
+        medlog_version:
+          type: string
+          example: "0.1"
+        system_metadata:
+          $ref: '#/components/schemas/SystemMetadata'
+        semantic_context:
+          $ref: '#/components/schemas/SemanticContext'
+
+    SystemMetadata:
+      type: object
+      properties:
+        hostname: { type: string }
+        app_name: { type: string }
+        proc_id:  { type: string }
+        latency_ms: { type: integer, format: int32 }
+
+    ModelInstance:
+      type: object
+      properties:
+        model_id:        { type: string, example: "gpt-4o" }
+        model_version:   { type: string, example: "2025-05-01" }
+        model_card_url:  { type: string, format: uri }
+        data_sheet_url:  { type: string, format: uri }
+
+    UserIdentity:
+      type: object
+      properties:
+        caller_type: { type: string, enum: [clinician, patient, admin, service] }
+        caller_id:   { type: string }
+
+    TargetIdentity:
+      type: object
+      properties:
+        target_type: { type: string, enum: [patient, document, claim, none] }
+        target_id:   { type: string }
+
+    Inputs:
+      type: object
+      properties:
+        prompt:      { type: string }
+        input_uri:   { type: string, format: uri, description: "Pointer to bulky input data" }
+
+    Artifact:
+      type: object
+      required: [artifact_type, artifact_uri]
+      properties:
+        artifact_type:
+          type: string
+          enum: [text_chunk, reasoning_trace, tool_call, explanation, other]
+        artifact_uri:
+          type: string
+          format: uri
+        mime_type:  { type: string }
+        description: { type: string }
+
+    HumanOutput:
+      type: object
+      required: [output_type, output_uri]
+      properties:
+        output_type: { type: string, enum: [text, image, video, audio, other] }
+        output_uri:  { type: string, format: uri }
+        summary:     { type: string }
+
+    Outcome:
+      type: object
+      required: [outcome_type]
+      properties:
+        outcome_type:
+          type: string
+          enum: [validated, contradicted, partial, unknown]
+        occurred_at:
+          type: string
+          format: date-time
+        description: { type: string }
+        evidence_uri: { type: string, format: uri }
+
+    Feedback:
+      oneOf:
+        - $ref: '#/components/schemas/RatingFeedback'
+        - $ref: '#/components/schemas/ThumbsFeedback'
+        - $ref: '#/components/schemas/TextFeedback'
+        - $ref: '#/components/schemas/SurveyFeedback'
+
+    RatingFeedback:
+      type: object
+      required: [feedback_type, rating_value]
+      properties:
+        feedback_type:
+          type: string
+          enum: [rating]
+        rating_value:
+          type: number
+          minimum: 0
+          maximum: 5
+
+    ThumbsFeedback:
+      type: object
+      required: [feedback_type, value]
+      properties:
+        feedback_type:
+          type: string
+          enum: [thumbs]
+        value:
+          type: string
+          enum: [up, down]
+
+    TextFeedback:
+      type: object
+      required: [feedback_type, text]
+      properties:
+        feedback_type:
+          type: string
+          enum: [text]
+        text:
+          type: string
+
+    SurveyFeedback:
+      type: object
+      required: [feedback_type, text]
+      properties:
+        feedback_type:
+          type: string
+          enum: [survey]
+        text:
+          type: string
+
+    # ---------- concrete event payloads ----------
+    InferenceStartEvent:
+      allOf:
+        - $ref: '#/components/schemas/BaseEvent'
+        - type: object
+          required: [model_instance, user_identity, target_identity, inputs]
+          properties:
+            model_instance:
+              $ref: '#/components/schemas/ModelInstance'
+            user_identity:
+              $ref: '#/components/schemas/UserIdentity'
+            target_identity:
+              $ref: '#/components/schemas/TargetIdentity'
+            inputs:
+              $ref: '#/components/schemas/Inputs'
+
+    InternalArtifactEvent:
+      allOf:
+        - $ref: '#/components/schemas/BaseEvent'
+        - type: object
+          required: [artifact]
+          properties:
+            artifact:
+              $ref: '#/components/schemas/Artifact'
+
+    HumanOutputEvent:
+      allOf:
+        - $ref: '#/components/schemas/BaseEvent'
+        - type: object
+          required: [output]
+          properties:
+            output:
+              $ref: '#/components/schemas/HumanOutput'
+
+    OutcomeEvent:
+      allOf:
+        - $ref: '#/components/schemas/BaseEvent'
+        - type: object
+          required: [outcome]
+          properties:
+            outcome:
+              $ref: '#/components/schemas/Outcome'
+
+    UserFeedbackEvent:
+      allOf:
+        - $ref: '#/components/schemas/BaseEvent'
+        - type: object
+          required: [feedback]
+          properties:
+            feedback:
+              $ref: '#/components/schemas/Feedback'
+
+    # Optional interoperability semantics; legacy event schemas are unchanged.
+    SemanticContext:
+      type: object
+      additionalProperties: false
+      properties:
+        input_messages:
+          type: array
+          items:
+            type: object
+          description: Ordered input messages validated against the vendored OTel 1.40.0
+            JSON schema.
+        output_messages:
+          type: array
+          items:
+            type: object
+          description: Output choices, including role, parts and finish_reason; OTel 1.40.0
+            schema.
+        system_instructions:
+          type: array
+          items:
+            type: object
+          description: Separate system instructions using OTel 1.40.0 text parts.
+        retrieval_documents:
+          type: array
+          items:
+            type: object
+          description: Retrieved documents using the OTel 1.40.0 schema.
+        tool:
+          type: object
+          additionalProperties: false
+          properties:
+            name:
+              type: string
+            call_id:
+              type: string
+            type:
+              type: string
+          required:
+          - name
+        user:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        session:
+          type: object
+          additionalProperties: false
+          properties:
+            id:
+              type: string
+          required:
+          - id
+        evaluation:
+          $ref: '#/components/schemas/SemanticEvaluation'
+        fhir:
+          $ref: '#/components/schemas/SemanticFHIR'
+        provenance:
+          $ref: '#/components/schemas/SemanticProvenance'
+        lineage:
+          $ref: '#/components/schemas/SemanticLineage'
+    SemanticEvaluation:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+        score:
+          type: number
+        label:
+          type: string
+        explanation:
+          type: string
+        response_id:
+          type: string
+        emit_event:
+          type: boolean
+          description: Also attach a gen_ai.evaluation.result event to the existing span;
+            does not add a MedLog log row.
+      required:
+      - name
+    SemanticFHIR:
+      type: object
+      additionalProperties: false
+      properties:
+        version:
+          type: string
+          enum:
+          - 4.0.1
+          - 5.0.0
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticFHIRReference'
+        occurred_period:
+          type: object
+          additionalProperties: false
+          properties:
+            start:
+              type: string
+              format: date-time
+            end:
+              type: string
+              format: date-time
+        recorded:
+          type: string
+          format: date-time
+      required:
+      - version
+    SemanticFHIRReference:
+      type: object
+      additionalProperties: false
+      properties:
+        role:
+          type: string
+          enum:
+          - caller
+          - user
+          - target
+          - encounter
+          - model
+          - input
+          - artifact
+          - output
+          - outcome
+          - feedback
+          - facility
+        reference:
+          type: string
+        type:
+          type: string
+        identifier:
+          type: object
+          additionalProperties: false
+          properties:
+            system:
+              type: string
+              format: uri
+            value:
+              type: string
+          required:
+          - system
+          - value
+        display:
+          type: string
+      required:
+      - role
+      anyOf:
+      - required:
+        - reference
+      - required:
+        - identifier
+    SemanticProvenance:
+      type: object
+      additionalProperties: false
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticEntity'
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticEntity'
+        agents:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticAgent'
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticRelation'
+    SemanticEntity:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uri
+      required:
+      - id
+    SemanticAgent:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          format: uri
+        type:
+          type: string
+          enum:
+          - Agent
+          - SoftwareAgent
+          - Person
+          - Organization
+      required:
+      - id
+      - type
+    SemanticRelation:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          enum:
+          - used
+          - wasGeneratedBy
+          - wasAssociatedWith
+        source:
+          type: string
+          format: uri
+        target:
+          type: string
+          format: uri
+      required:
+      - type
+      - source
+      - target
+    SemanticLineage:
+      type: object
+      additionalProperties: false
+      properties:
+        run_id:
+          type: string
+          format: uuid
+        job:
+          $ref: '#/components/schemas/SemanticDataset'
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticDataset'
+        outputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/SemanticDataset'
+    SemanticDataset:
+      type: object
+      additionalProperties: false
+      properties:
+        namespace:
+          type: string
+        name:
+          type: string
+      required:
+      - namespace
+      - name

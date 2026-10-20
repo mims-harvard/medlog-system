@@ -1,0 +1,322 @@
+groups:
+- id: registry.medlog
+  type: attribute_group
+  brief: MedLog event attributes, including optional interoperability references.
+  attributes:
+  - id: medlog.artifact.artifact_type
+    type: string
+    stability: development
+    brief: MedLog artifact artifact type.
+    examples:
+    - example
+  - id: medlog.artifact.artifact_uri
+    type: string
+    stability: development
+    brief: MedLog artifact artifact uri.
+    examples:
+    - example
+  - id: medlog.artifact.description
+    type: string
+    stability: development
+    brief: MedLog artifact description.
+    examples:
+    - example
+  - id: medlog.artifact.mime_type
+    type: string
+    stability: development
+    brief: MedLog artifact mime type.
+    examples:
+    - example
+  - id: medlog.event_id
+    type: string
+    stability: development
+    brief: MedLog event id.
+    examples:
+    - example
+  - id: medlog.event_type
+    type: string
+    stability: development
+    brief: MedLog event type.
+    examples:
+    - example
+  - id: medlog.feedback.feedback_type
+    type: string
+    stability: development
+    brief: MedLog feedback feedback type.
+    examples:
+    - example
+  - id: medlog.feedback.rating_value
+    type: double
+    stability: development
+    brief: MedLog feedback rating value.
+    examples:
+    - 4.0
+  - id: medlog.feedback.text
+    type: string
+    stability: development
+    brief: MedLog feedback text.
+    examples:
+    - example
+  - id: medlog.feedback.value
+    type: string
+    stability: development
+    brief: MedLog feedback value.
+    examples:
+    - example
+  - id: medlog.fhir.occurred_period
+    type: any
+    stability: development
+    brief: MedLog fhir occurred period.
+    note: 'Source: semantic_context.fhir.occurred_period. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.fhir.recorded
+    type: string
+    stability: development
+    brief: MedLog fhir recorded.
+    examples:
+    - example
+    note: 'Source: semantic_context.fhir.recorded. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.fhir.references
+    type: any
+    stability: development
+    brief: MedLog fhir references.
+    note: 'Source: semantic_context.fhir.references. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.fhir.version
+    type: string
+    stability: development
+    brief: MedLog fhir version.
+    examples:
+    - example
+    note: 'Source: semantic_context.fhir.version. See docs/semantic-standards.md for
+      the standard and FHIR mapping.'
+  - id: medlog.inputs.input_uri
+    type: string
+    stability: development
+    brief: MedLog inputs input uri.
+    examples:
+    - example
+  - id: medlog.inputs.prompt
+    type: string
+    stability: development
+    brief: MedLog inputs prompt.
+    examples:
+    - example
+  - id: medlog.medlog_version
+    type: string
+    stability: development
+    brief: MedLog medlog version.
+    examples:
+    - example
+  - id: medlog.model_instance.data_sheet_url
+    type: string
+    stability: development
+    brief: MedLog model instance data sheet url.
+    examples:
+    - example
+  - id: medlog.model_instance.model_card_url
+    type: string
+    stability: development
+    brief: MedLog model instance model card url.
+    examples:
+    - example
+  - id: medlog.model_instance.model_id
+    type: string
+    stability: development
+    brief: MedLog model instance model id.
+    examples:
+    - example
+  - id: medlog.model_instance.model_version
+    type: string
+    stability: development
+    brief: MedLog model instance model version.
+    examples:
+    - example
+  - id: medlog.openlineage.inputs
+    type: any
+    stability: development
+    brief: MedLog openlineage inputs.
+    note: 'Source: semantic_context.lineage.inputs. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.openlineage.job
+    type: any
+    stability: development
+    brief: MedLog openlineage job.
+    note: 'Source: semantic_context.lineage.job. See docs/semantic-standards.md for
+      the standard and FHIR mapping.'
+  - id: medlog.openlineage.outputs
+    type: any
+    stability: development
+    brief: MedLog openlineage outputs.
+    note: 'Source: semantic_context.lineage.outputs. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.openlineage.run_id
+    type: string
+    stability: development
+    brief: MedLog openlineage run id.
+    examples:
+    - example
+    note: 'Source: semantic_context.lineage.run_id. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.outcome.description
+    type: string
+    stability: development
+    brief: MedLog outcome description.
+    examples:
+    - example
+  - id: medlog.outcome.evidence_uri
+    type: string
+    stability: development
+    brief: MedLog outcome evidence uri.
+    examples:
+    - example
+  - id: medlog.outcome.occurred_at
+    type: string
+    stability: development
+    brief: MedLog outcome occurred at.
+    examples:
+    - example
+  - id: medlog.outcome.outcome_type
+    type: string
+    stability: development
+    brief: MedLog outcome outcome type.
+    examples:
+    - example
+  - id: medlog.output.output_type
+    type: string
+    stability: development
+    brief: MedLog output output type.
+    examples:
+    - example
+  - id: medlog.output.output_uri
+    type: string
+    stability: development
+    brief: MedLog output output uri.
+    examples:
+    - example
+  - id: medlog.output.summary
+    type: string
+    stability: development
+    brief: MedLog output summary.
+    examples:
+    - example
+  - id: medlog.parent_event_id
+    type: string
+    stability: development
+    brief: MedLog parent event id.
+    examples:
+    - example
+  - id: medlog.prov.activities
+    type: any
+    stability: development
+    brief: MedLog prov activities.
+    note: 'Source: semantic_context.provenance.activities. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.prov.agents
+    type: any
+    stability: development
+    brief: MedLog prov agents.
+    note: 'Source: semantic_context.provenance.agents. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.prov.entities
+    type: any
+    stability: development
+    brief: MedLog prov entities.
+    note: 'Source: semantic_context.provenance.entities. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.prov.relations
+    type: any
+    stability: development
+    brief: MedLog prov relations.
+    note: 'Source: semantic_context.provenance.relations. See docs/semantic-standards.md
+      for the standard and FHIR mapping.'
+  - id: medlog.run_id
+    type: string
+    stability: development
+    brief: MedLog run id.
+    examples:
+    - example
+  - id: medlog.semantic_version
+    type: string
+    stability: development
+    brief: MedLog semantic version.
+    examples:
+    - example
+  - id: medlog.system_metadata.app_name
+    type: string
+    stability: development
+    brief: MedLog system metadata app name.
+    examples:
+    - example
+  - id: medlog.system_metadata.hostname
+    type: string
+    stability: development
+    brief: MedLog system metadata hostname.
+    examples:
+    - example
+  - id: medlog.system_metadata.latency_ms
+    type: int
+    stability: development
+    brief: MedLog system metadata latency ms.
+    examples:
+    - 12
+  - id: medlog.system_metadata.proc_id
+    type: string
+    stability: development
+    brief: MedLog system metadata proc id.
+    examples:
+    - example
+  - id: medlog.target_identity.target_id
+    type: string
+    stability: development
+    brief: MedLog target identity target id.
+    examples:
+    - example
+  - id: medlog.target_identity.target_type
+    type: string
+    stability: development
+    brief: MedLog target identity target type.
+    examples:
+    - example
+  - id: medlog.timestamp
+    type: string
+    stability: development
+    brief: MedLog timestamp.
+    examples:
+    - example
+  - id: medlog.user_identity.caller_id
+    type: string
+    stability: development
+    brief: MedLog user identity caller id.
+    examples:
+    - example
+  - id: medlog.user_identity.caller_type
+    type: string
+    stability: development
+    brief: MedLog user identity caller type.
+    examples:
+    - example
+- id: medlog.standard_aliases
+  type: attribute_group
+  brief: Upstream attributes reused by explicit semantic context, plus legacy GenAI
+    aliases.
+  attributes:
+  - ref: gen_ai.conversation.id
+  - ref: gen_ai.evaluation.explanation
+  - ref: gen_ai.evaluation.name
+  - ref: gen_ai.evaluation.score.label
+  - ref: gen_ai.evaluation.score.value
+  - ref: gen_ai.input.messages
+  - ref: gen_ai.output.messages
+  - ref: gen_ai.output.type
+  - ref: gen_ai.request.model
+  - ref: gen_ai.response.id
+  - ref: gen_ai.retrieval.documents
+  - ref: gen_ai.system_instructions
+  - ref: gen_ai.tool.call.id
+  - ref: gen_ai.tool.name
+  - ref: gen_ai.tool.type
+  - ref: session.id
+  - ref: user.id
+  - ref: user.name

@@ -1,0 +1,55 @@
+{
+  "resourceType": "AuditEvent",
+  "id": "11111111-1111-4111-8111-111111111111",
+  "code": {
+    "coding": [
+      {
+        "system": "https://example.org/fhir/CodeSystem/medlog-events",
+        "code": "inference-start"
+      }
+    ]
+  },
+  "action": "E",
+  "occurredPeriod": {
+    "start": "2026-09-19T12:00:00Z",
+    "end": "2026-09-19T12:00:01Z"
+  },
+  "recorded": "2026-09-19T12:00:02Z",
+  "agent": [
+    {
+      "who": {
+        "reference": "Device/calling-service"
+      },
+      "requestor": true
+    },
+    {
+      "who": {
+        "reference": "Practitioner/clinician1"
+      },
+      "requestor": false
+    }
+  ],
+  "source": {
+    "observer": {
+      "reference": "Device/medlog-receiver"
+    }
+  },
+  "patient": {
+    "reference": "Patient/p1"
+  },
+  "encounter": {
+    "reference": "Encounter/e1"
+  },
+  "entity": [
+    {
+      "what": {
+        "reference": "Device/model1"
+      }
+    },
+    {
+      "what": {
+        "reference": "DocumentReference/note1"
+      }
+    }
+  ]
+}

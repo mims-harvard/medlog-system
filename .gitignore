@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+
+# Python packaging and test artifacts
+*.egg
+*.egg-info/
+build/
+develop-eggs/
+.eggs/
+pip-wheel-metadata/
+wheels/
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Local docker volumes (ClickHouse data, otelcol persistent queue)
+.volumes/
+
+# Env / secrets
+.env
+
+# OS
+.DS_Store
+
+# Local data
+data/
+
+# Offline image bundles built by scripts/build_offline_bundle.sh
+dist/
