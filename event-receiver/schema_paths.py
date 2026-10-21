@@ -12,6 +12,7 @@ def schema_file(relative_path: str) -> Path:
     if not path.is_file():
         raise FileNotFoundError(
             f"Required MedLog schema file is missing: {path}. "
-            "The receiver requires the schemas/ directory alongside event-receiver/."
+            "The receiver requires the schemas/ directory alongside event-receiver/. "
+            "From the repository root, run: git submodule update --init --recursive schemas"
         )
     return path

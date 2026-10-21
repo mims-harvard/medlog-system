@@ -64,20 +64,38 @@ Refer to the ClickStack and OpenTelemetry documentation for configuration detail
 
 ## Clone the repository
 
-This repo depends on the ClickStack repo, as such initialize them when cloning:
+This repo uses ClickStack and the MedLog schemas as Git submodules. Initialize both
+when cloning:
 
 ```bash
 git clone --recurse-submodules <repository-url>
-cd medlog-telemetry
+cd medlog-system
 ```
 
-Alternatively of you already cloned the repository without submodules, initialize them with:
+If you already cloned the repository without submodules, initialize them with:
 
 ```bash
 git submodule update --init --recursive
 ```
 
-The submodule also supplies `ClickStack/.env`, which defines the `HYPERDX_*` and image
+To fetch only the schemas, or update them to the latest revision on `main`:
+
+```bash
+# Fetch schemas after cloning.
+git submodule update --init --recursive schemas
+
+# Fetch the latest schemas from main.
+git submodule update --init --remote schemas
+```
+
+The `schemas/` submodule comes from
+[medlog-spec](https://github.com/mims-harvard/medlog-spec) and is configured with
+`branch = main`. Git always records a specific submodule commit: ordinary initialization
+uses that recorded revision, while `--remote` fetches the latest revision on `main`.
+After updating, review the schema changes and commit the changed `schemas` pointer
+in this repository so other checkouts use the reviewed revision.
+
+The ClickStack submodule supplies `ClickStack/.env`, which defines the `HYPERDX_*` and image
 tag variables that both compose files interpolate. If Compose warns that those variables
 are not set and then fails with `no port specified: :<empty>`, the submodule is missing:
 a GitHub ZIP download of this repository does not include submodule contents.

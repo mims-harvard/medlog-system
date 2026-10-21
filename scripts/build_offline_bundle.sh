@@ -53,7 +53,7 @@ for schema in \
     schemas/semantic_schemas/LICENSE; do
     if [ ! -f "$schema" ]; then
         echo "error: required schema bundle file is missing: $REPO/$schema" >&2
-        echo "       restore the complete schemas/ directory before building." >&2
+        echo "       run: git submodule update --init --recursive schemas" >&2
         exit 1
     fi
 done

@@ -1,3 +1,7 @@
 [submodule "ClickStack"]
 	path = ClickStack
 	url = git@github.com:ClickHouse/ClickStack.git
+[submodule "schemas"]
+	path = schemas
+	url = git@github.com:mims-harvard/medlog-spec.git
+	branch = main
