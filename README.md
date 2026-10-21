@@ -244,6 +244,11 @@ never, and it gives the share of runs each one reached.
 
 To run the event receiver outside Docker instead:
 
+Keep the complete [schemas/ directory](schemas/README.md) alongside `event-receiver/`.
+The receiver reads these contracts locally, independently of the working directory.
+Use the source checkout and editable installation below; a standalone receiver wheel
+does not bundle the schemas.
+
 ```bash
 cd event-receiver
 python3 -m venv .venv

@@ -42,6 +42,22 @@ cd "$REPO"
 COMPOSE="docker compose -f ClickStack/docker-compose.yml -f docker-compose.yml"
 SLUG="$(echo "$PLATFORM" | tr '/' '-')"
 
+for schema in \
+    schemas/openapi.yaml \
+    schemas/semconv/medlog.yaml \
+    schemas/semconv/manifest.yaml \
+    schemas/semantic_schemas/gen-ai-system-instructions.json \
+    schemas/semantic_schemas/gen-ai-retrieval-documents.json \
+    schemas/semantic_schemas/gen-ai-output-messages.json \
+    schemas/semantic_schemas/gen-ai-input-messages.json \
+    schemas/semantic_schemas/LICENSE; do
+    if [ ! -f "$schema" ]; then
+        echo "error: required schema bundle file is missing: $REPO/$schema" >&2
+        echo "       restore the complete schemas/ directory before building." >&2
+        exit 1
+    fi
+done
+
 if [ ! -f ClickStack/.env ]; then
     echo "error: ClickStack/.env is missing - the submodule is not initialized." >&2
     echo "       run: git submodule update --init --recursive" >&2
@@ -108,7 +124,7 @@ mkdir -p "$STAGE/$BUNDLE_DIR"
 # ClickStack submodule's git objects) and the Dockerfile needs only these two paths.
 CONTEXT="$STAGE/context"
 mkdir -p "$CONTEXT"
-cp openapi.yaml "$CONTEXT/"
+rsync -a --exclude '.git' schemas "$CONTEXT/"
 rsync -a --exclude '.venv' --exclude '__pycache__' --exclude 'data' --exclude '.env' \
     event-receiver "$CONTEXT/"
 

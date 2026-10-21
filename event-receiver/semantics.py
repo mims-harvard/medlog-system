@@ -5,9 +5,9 @@ No clinical identities, evaluation scores, or message contents are inferred.
 """
 import json
 from datetime import datetime
-from importlib.resources import files
 
 from jsonschema import Draft202012Validator
+from schema_paths import schema_file
 
 SEMANTIC_VERSION = "0.2.0"
 
@@ -18,7 +18,7 @@ class SemanticError(ValueError):
 
 _STRUCTURED_SCHEMAS = {
     key: Draft202012Validator(json.loads(
-        files("semantic_schemas").joinpath("gen-ai-" + filename + ".json").read_text()
+        schema_file("semantic_schemas/gen-ai-" + filename + ".json").read_text(encoding="utf-8")
     ))
     for key, filename in {
         "input_messages": "input-messages",

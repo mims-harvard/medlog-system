@@ -20,8 +20,5 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["app", "event_store", "semantics"]
-packages = ["semantic_schemas"]
-
-[tool.setuptools.package-data]
-semantic_schemas = ["*.json", "LICENSE"]
+py-modules = ["app", "event_store", "semantics", "schema_paths"]
+packages = []

@@ -20,6 +20,7 @@ from opentelemetry.exporter.otlp.proto.common._internal._log_encoder import enco
 
 import app
 from semantics import build_attributes, CUSTOM_MAPPINGS, STANDARD_MAPPINGS
+from schema_paths import schema_file
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -198,7 +199,7 @@ class SemanticReceiverTests(unittest.TestCase):
         self.assertEqual(len(self.logs.get_finished_logs()), 1)
 
     def test_all_emitted_attributes_registered(self):
-        registry = yaml.safe_load((ROOT / 'semconv/medlog.yaml').read_text())
+        registry = yaml.safe_load(schema_file('semconv/medlog.yaml').read_text())
         registered = {attribute.get('id', attribute.get('ref'))
                       for group in registry['groups'] for attribute in group['attributes']}
         for kind in ('inference-start', 'internal-artifact', 'human-output', 'outcome', 'user-feedback'):

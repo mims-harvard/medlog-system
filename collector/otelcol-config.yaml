@@ -1,5 +1,5 @@
 # otelcol-contrib config: receives MedLog events as OTLP logs from the Flask event receiver
-# (event-receiver/app.py, which validates against openapi.yaml and sets gen_ai.*/medlog.* log
+# (event-receiver/app.py, which validates against schemas/openapi.yaml and sets gen_ai.*/medlog.* log
 # attributes) and writes them to ClickHouse. Runs as the medlog-otelcol service in
 # docker-compose.yml, alongside ClickStack, connecting directly to ClickStack's ch-server.
 

@@ -1,6 +1,6 @@
 """FastAPI event receiver for the MedLog OpenAPI spec.
 
-Validates each POSTed event against its schema in ../openapi.yaml, then forwards it as an
+Validates each POSTed event against ../schemas/openapi.yaml, then forwards it as an
 OTLP log record to the collector endpoint configured via OTEL_EXPORTER_OTLP_* env vars / .env.
 """
 
@@ -26,11 +26,12 @@ from opentelemetry.sdk._logs.export import SimpleLogRecordProcessor
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from event_store import init_db, record_if_new
+from schema_paths import schema_file
 from semantics import build_attributes, span_attributes, validate_context, SemanticError
 
 load_dotenv(os.getenv("ENV_FILE"))
 
-SPEC_PATH = Path(__file__).resolve().parent.parent / "openapi.yaml"
+SPEC_PATH = schema_file("openapi.yaml")
 with SPEC_PATH.open() as f:
     _spec_dict = yaml.safe_load(f)
 # The spec's example `servers:` (SwaggerHub mock / docs placeholder) don't match this server's

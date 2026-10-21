@@ -2,8 +2,8 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# openapi.yaml must sit one level above event-receiver/ to match app.py's parent.parent lookup.
-COPY openapi.yaml /app/openapi.yaml
+# Keep the same sibling directories as the source checkout (see schema_paths.py).
+COPY schemas/ /app/schemas/
 COPY event-receiver/ /app/event-receiver/
 
 WORKDIR /app/event-receiver
