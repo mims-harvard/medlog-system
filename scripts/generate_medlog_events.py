@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate synthetic MedLog events (per schemas/openapi.yaml) and POST them to an HTTP server.
+"""Generate synthetic MedLog events (per spec/openapi.yaml) and POST them to an HTTP server.
 
 MedLog is a write-once event log for clinical AI: every time a model is invoked
 to interact with a human, another algorithm, or an automated workflow, one or

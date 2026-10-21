@@ -43,17 +43,17 @@ COMPOSE="docker compose -f ClickStack/docker-compose.yml -f docker-compose.yml"
 SLUG="$(echo "$PLATFORM" | tr '/' '-')"
 
 for schema in \
-    schemas/openapi.yaml \
-    schemas/semconv/medlog.yaml \
-    schemas/semconv/manifest.yaml \
-    schemas/semantic_schemas/gen-ai-system-instructions.json \
-    schemas/semantic_schemas/gen-ai-retrieval-documents.json \
-    schemas/semantic_schemas/gen-ai-output-messages.json \
-    schemas/semantic_schemas/gen-ai-input-messages.json \
-    schemas/semantic_schemas/LICENSE; do
+    spec/openapi.yaml \
+    spec/semconv/medlog.yaml \
+    spec/semconv/manifest.yaml \
+    spec/semantic_schemas/gen-ai-system-instructions.json \
+    spec/semantic_schemas/gen-ai-retrieval-documents.json \
+    spec/semantic_schemas/gen-ai-output-messages.json \
+    spec/semantic_schemas/gen-ai-input-messages.json \
+    spec/semantic_schemas/LICENSE; do
     if [ ! -f "$schema" ]; then
         echo "error: required schema bundle file is missing: $REPO/$schema" >&2
-        echo "       run: git submodule update --init --recursive schemas" >&2
+        echo "       run: git submodule update --init --recursive spec" >&2
         exit 1
     fi
 done
@@ -124,7 +124,7 @@ mkdir -p "$STAGE/$BUNDLE_DIR"
 # ClickStack submodule's git objects) and the Dockerfile needs only these two paths.
 CONTEXT="$STAGE/context"
 mkdir -p "$CONTEXT"
-rsync -a --exclude '.git' schemas "$CONTEXT/"
+rsync -a --exclude '.git' spec "$CONTEXT/"
 rsync -a --exclude '.venv' --exclude '__pycache__' --exclude 'data' --exclude '.env' \
     event-receiver "$CONTEXT/"
 

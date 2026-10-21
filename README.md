@@ -64,7 +64,7 @@ Refer to the ClickStack and OpenTelemetry documentation for configuration detail
 
 ## Clone the repository
 
-This repo uses ClickStack and the MedLog schemas as Git submodules. Initialize both
+This repo uses ClickStack and the MedLog specifications as Git submodules. Initialize both
 when cloning:
 
 ```bash
@@ -78,21 +78,21 @@ If you already cloned the repository without submodules, initialize them with:
 git submodule update --init --recursive
 ```
 
-To fetch only the schemas, or update them to the latest revision on `main`:
+To fetch only the specifications, or update them to the latest revision on `main`:
 
 ```bash
-# Fetch schemas after cloning.
-git submodule update --init --recursive schemas
+# Fetch specifications after cloning.
+git submodule update --init --recursive spec
 
-# Fetch the latest schemas from main.
-git submodule update --init --remote schemas
+# Fetch the latest specifications from main.
+git submodule update --init --remote spec
 ```
 
-The `schemas/` submodule comes from
+The `spec/` submodule comes from
 [medlog-spec](https://github.com/mims-harvard/medlog-spec) and is configured with
 `branch = main`. Git always records a specific submodule commit: ordinary initialization
 uses that recorded revision, while `--remote` fetches the latest revision on `main`.
-After updating, review the schema changes and commit the changed `schemas` pointer
+After updating, review the specification changes and commit the changed `spec` pointer
 in this repository so other checkouts use the reviewed revision.
 
 The ClickStack submodule supplies `ClickStack/.env`, which defines the `HYPERDX_*` and image
@@ -262,10 +262,10 @@ never, and it gives the share of runs each one reached.
 
 To run the event receiver outside Docker instead:
 
-Keep the complete [schemas/ directory](schemas/README.md) alongside `event-receiver/`.
+Keep the complete [spec/ directory](spec/README.md) alongside `event-receiver/`.
 The receiver reads these contracts locally, independently of the working directory.
 Use the source checkout and editable installation below; a standalone receiver wheel
-does not bundle the schemas.
+does not bundle the specifications.
 
 ```bash
 cd event-receiver

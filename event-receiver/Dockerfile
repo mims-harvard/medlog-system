@@ -3,7 +3,7 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Keep the same sibling directories as the source checkout (see schema_paths.py).
-COPY schemas/ /app/schemas/
+COPY spec/ /app/spec/
 COPY event-receiver/ /app/event-receiver/
 
 WORKDIR /app/event-receiver

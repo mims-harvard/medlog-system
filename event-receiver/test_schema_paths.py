@@ -39,7 +39,7 @@ class SchemaPathTests(unittest.TestCase):
 
     def test_missing_contract_identifies_the_expected_file_and_layout(self):
         with tempfile.TemporaryDirectory() as directory:
-            root = Path(directory) / "schemas"
+            root = Path(directory) / "spec"
             with patch.object(schema_paths, "SCHEMA_ROOT", root):
                 for relative_path in (
                     "openapi.yaml",
@@ -52,7 +52,7 @@ class SchemaPathTests(unittest.TestCase):
                         with self.assertRaises(FileNotFoundError) as error:
                             schema_paths.schema_file(relative_path)
                         self.assertIn(str(root / relative_path), str(error.exception))
-                        self.assertIn("schemas/ directory alongside event-receiver/",
+                        self.assertIn("spec/ directory alongside event-receiver/",
                                       str(error.exception))
 
 

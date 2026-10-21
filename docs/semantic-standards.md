@@ -7,23 +7,23 @@ artifact/output URIs. `medlog_version` remains the producer's protocol version;
 `medlog.semantic_version = 0.2.0` identifies this mapping only when context is supplied.
 
 Start with the [complete inference example](examples/semantic-inference.json),
-[OpenAPI contract](../schemas/openapi.yaml), [Weaver registry](../schemas/semconv/medlog.yaml), or
+[OpenAPI contract](../spec/openapi.yaml), [Weaver registry](../spec/semconv/medlog.yaml), or
 [FHIR export guide](fhir-export.md).
 
 ## Versioned standards
 
-The registry [manifest](../schemas/semconv/manifest.yaml) pins OpenTelemetry semantic conventions
+The registry [manifest](../spec/semconv/manifest.yaml) pins OpenTelemetry semantic conventions
 **1.40.0**. This deliberately does not track the latest experimental GenAI conventions.
 Its schema URL is an identifier for this repository's registry, not a claim that a schema
 has been published at that address. Validate with Weaver 0.26.1:
 
 ```sh
-weaver registry check -r schemas/semconv
+weaver registry check -r spec/semconv
 ```
 
 Weaver resolves the pinned upstream registry over the network. Request validation works
 offline: the four original GenAI JSON schemas are vendored in
-[`schemas/semantic_schemas`](../schemas/semantic_schemas), with their Apache-2.0
+[`spec/semantic_schemas`](../spec/semantic_schemas), with their Apache-2.0
 license. The [upstream definitions](https://github.com/open-telemetry/semantic-conventions/tree/v1.40.0/docs/gen-ai)
 are authoritative for message, instruction and retrieved-document shapes. The OpenAPI
 schema validates context envelopes; these JSON schemas validate the structured values.

@@ -1,6 +1,6 @@
 """FastAPI event receiver for the MedLog OpenAPI spec.
 
-Validates each POSTed event against ../schemas/openapi.yaml, then forwards it as an
+Validates each POSTed event against ../spec/openapi.yaml, then forwards it as an
 OTLP log record to the collector endpoint configured via OTEL_EXPORTER_OTLP_* env vars / .env.
 """
 
